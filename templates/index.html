@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>BFS Visual Pro</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        .card {
+            backdrop-filter: blur(15px);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            width: 400px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            text-align: center;
+            animation: fadeIn 1s ease;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: #ff7a18;
+            background: linear-gradient(45deg, #ff7a18, #ffb347);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
+        }
+
+        .resultado {
+            margin-top: 20px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .estado {
+            background: rgba(255,255,255,0.2);
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 10px;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {opacity: 0; transform: translateY(20px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+
+        @keyframes slideUp {
+            from {opacity: 0; transform: translateY(10px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <h1> *-* BFS Visual *-*</h1>
+
+        <input type="text" id="inicio" placeholder="Inicio (ej: 4,2,3,1)">
+        <input type="text" id="objetivo" placeholder="Objetivo (ej: 1,2,3,4)">
+
+        <button onclick="ejecutarBFS()">Ejecutar</button>
+
+        <div class="resultado" id="resultado"></div>
+    </div>
+
+<script>
+function ejecutarBFS() {
+    let inicio = document.getElementById("inicio").value.split(",").map(Number);
+    let objetivo = document.getElementById("objetivo").value.split(",").map(Number);
+
+    fetch("/bfs", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ inicio, objetivo })
+    })
+    .then(res => res.json())
+    .then(data => {
+        let contenedor = document.getElementById("resultado");
+        contenedor.innerHTML = "<h3>Resultado:</h3>";
+
+        data.forEach((estado, i) => {
+            contenedor.innerHTML += `
+                <div class="estado">
+                    Paso ${i}: [${estado}]
+                </div>`;
+        });
+    });
+}
+</script>
+
+</body>
+</html>
